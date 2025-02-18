@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "MyApp",
-    "slug": "MyApp",
+    "name": "hemis",
+    "slug": "hemis",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "hemis",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
