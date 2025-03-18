@@ -1,16 +1,16 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getReactNativePersistence, initializeAuth } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getReactNativePersistence, initializeAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyB5GywxlVeGqML63LSVO6Sped1wGS-UrcA",
-  authDomain: "shadow-fd0ec.firebaseapp.com",
-  projectId: "shadow-fd0ec",
-  storageBucket: "shadow-fd0ec.firebasestorage.app",
-  messagingSenderId: "821110575808",
-  appId: "1:821110575808:web:536f0a862e160605fb9325",
-  measurementId: "G-NWQG0VMW9G",
+  apiKey: "AIzaSyDTdfjJFo_HmAMro1PeT8M87MbXARRPjH8",
+  authDomain: "education-system-5e841.firebaseapp.com",
+  projectId: "education-system-5e841",
+  storageBucket: "education-system-5e841.firebasestorage.app",
+  messagingSenderId: "331317825675",
+  appId: "1:331317825675:web:a4643757ad3a7191d4048e",
+  measurementId: "G-MB49C7CE29"
 };
 
 const app = initializeApp(firebaseConfig);

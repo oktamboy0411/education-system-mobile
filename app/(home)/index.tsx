@@ -7,6 +7,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons"; // Ikonkalar uchun
+import { useRouter } from "expo-router";
 
 type Sections = {
   id: string;
@@ -60,9 +61,15 @@ const ListItem = ({ item }: { item: { title: string; icon: string } }) => {
 };
 
 const HomeScreen = () => {
+  const router = useRouter();
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Bosh Sahifa</Text>
+      <TouchableOpacity onPress={() => router.push("/register")}>
+        <Text style={{ textAlign: "center", marginTop: 15, color: "blue" }}>
+          chiqish
+        </Text>
+      </TouchableOpacity>
       <FlatList
         data={sections}
         keyExtractor={(item) => item.id}

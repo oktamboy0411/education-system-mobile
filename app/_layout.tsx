@@ -1,37 +1,28 @@
 import { Stack, useRouter } from "expo-router";
-import { useEffect, useState } from "react";
-import { onAuthStateChanged, User } from "firebase/auth";
-import { auth } from "../config/firebase";
-import { View, ActivityIndicator } from "react-native";
+import { useEffect } from "react";
+import AsyncStorageUserFunctions from "@/utils/AsyncStorage";
 
 function Layout() {
   const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
+    const checkUser = async () => {
+      const storedUser = await AsyncStorageUserFunctions.getUsers();
+      if (storedUser.length !== 0) {
+        router.replace("/(local-password)");
+      } else {
+        router.replace("/(auth)");
+      }
+    };
 
-      if (!currentUser) router.replace("/login");
-    });
-
-    return () => unsubscribe();
+    checkUser();
   }, []);
-
-  if (loading) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
 
   return (
     <Stack>
       <Stack.Screen name="(auth)" options={{ headerShown: false }} />
       <Stack.Screen name="(home)" options={{ headerShown: false }} />
+      <Stack.Screen name="(local-password)" options={{ headerShown: false }} />
     </Stack>
   );
 }

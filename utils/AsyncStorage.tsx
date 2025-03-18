@@ -1,6 +1,12 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import uuid from "react-native-uuid";
 
+export interface UserTypes {
+  id: string,
+  email:string,
+  password:string,
+}
+
 const saveUser = async (newUser: { email: string; password: string }) => {
   try {
     const existingUsers = await AsyncStorage.getItem("users");
