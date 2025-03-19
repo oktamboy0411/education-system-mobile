@@ -1,53 +1,20 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import auth from "@react-native-firebase/auth";
+import { View, Text, Button } from "react-native";
+import { useNavigation } from "expo-router";
+import { DrawerActions } from "@react-navigation/native";
 
-const Home = () => {
-  const signOutUser = async () => {
-    try {
-      await auth().signOut();
-      alert("Muvaffaqiyatli chiqdingiz!");
-    } catch (error) {
-      alert("Xatolik yuz berdi: ");
-    }
-  };
+const HomeScreen = () => {
+  const navigation = useNavigation();
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Bosh Sahifa</Text>
-      <TouchableOpacity style={styles.button} onPress={signOutUser}>
-        <Text style={styles.buttonText}>Chiqish</Text>
-      </TouchableOpacity>
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Button
+        title="Menyuni ochish"
+        onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+      />
+      <Text style={{ fontSize: 20, marginTop: 20 }}>🏠 Bosh sahifa</Text>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f8f9fa",
-    padding: 20,
-    justifyContent: "center", // UI markazlash uchun
-    alignItems: "center",
-  },
-  header: {
-    fontSize: 26,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 20,
-    color: "#333",
-  },
-  button: {
-    backgroundColor: "#007bff",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-});
-
-export default Home;
+export default HomeScreen;

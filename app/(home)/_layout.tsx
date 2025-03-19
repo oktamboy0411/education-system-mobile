@@ -1,14 +1,16 @@
 import React, { Component } from "react";
-import { Stack } from "expo-router";
+import { Drawer } from "expo-router/drawer";
 
-export class _layout extends Component {
+class HomeLayout extends Component {
   render() {
     return (
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="index" />
-      </Stack>
+      <Drawer screenOptions={{ headerShown: true }}>
+        <Drawer.Screen name="index" options={{ title: "Bosh sahifa" }} />
+        <Drawer.Screen name="profile" options={{ title: "Profil" }} />
+        <Drawer.Screen name="settings" options={{ title: "Sozlamalar" }} />
+      </Drawer>
     );
   }
 }
 
-export default _layout;
+export default HomeLayout;
