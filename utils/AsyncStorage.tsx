@@ -3,8 +3,9 @@ import uuid from "react-native-uuid";
 
 export interface UserTypes {
   id: string,
-  email:string,
-  password:string,
+  email: string,
+  password: string,
+  localPassword?: string,
 }
 
 const saveUser = async (newUser: { email: string; password: string }) => {
@@ -15,10 +16,10 @@ const saveUser = async (newUser: { email: string; password: string }) => {
     const userWithId = {
       id: uuid.v4(),
       ...newUser,
+      localPassword: "", // Default bo'sh qiymat
     };
 
     usersArray.push(userWithId);
-
     await AsyncStorage.setItem("users", JSON.stringify(usersArray));
 
     console.log("Foydalanuvchi muvaffaqiyatli saqlandi!", userWithId);
@@ -40,15 +41,7 @@ const getUsers = async () => {
 const getUserById = async (id: string) => {
   try {
     const users = await getUsers();
-    const user = users.find((u: { id: string }) => u.id === id);
-
-    if (user) {
-      console.log("Foydalanuvchi topildi:", user);
-      return user;
-    } else {
-      console.log("Foydalanuvchi topilmadi!");
-      return null;
-    }
+    return users.find((user: UserTypes) => user.id === id) || null;
   } catch (error) {
     console.error("Xatolik:", error);
     return null;
@@ -58,38 +51,44 @@ const getUserById = async (id: string) => {
 const deleteUserById = async (id: string) => {
   try {
     let users = await getUsers();
-    const filteredUsers = users.filter(
-      (user: { id: string }) => user.id !== id
-    );
-
+    const filteredUsers = users.filter((user: UserTypes) => user.id !== id);
     await AsyncStorage.setItem("users", JSON.stringify(filteredUsers));
-
     console.log(`Foydalanuvchi (${id}) o‘chirildi!`);
   } catch (error) {
     console.error("Xatolik:", error);
   }
 };
 
-const updatePasswordById = async (id: string, newPassword: string) => {
+const updateLocalPassword = async (id: string, newLocalPassword: string) => {
   try {
     let users = await getUsers();
-    let updatedUsers = users.map((user: { id: string; password: string }) =>
-      user.id === id ? { ...user, password: newPassword } : user
+    users = users.map((user: UserTypes) =>
+      user.id === id ? { ...user, localPassword: newLocalPassword } : user
     );
-
-    await AsyncStorage.setItem("users", JSON.stringify(updatedUsers));
-    console.log(`Foydalanuvchi (${id}) paroli yangilandi!`);
+    await AsyncStorage.setItem("users", JSON.stringify(users));
+    console.log(`Foydalanuvchi (${id}) ning localPassword yangilandi!`);
   } catch (error) {
     console.error("Xatolik:", error);
+  }
+};
+
+const getLocalPassword = async (id: string) => {
+  try {
+    const user = await getUserById(id);
+    return user ? user.localPassword : null;
+  } catch (error) {
+    console.error("Xatolik:", error);
+    return null;
   }
 };
 
 const AsyncStorageUserFunctions = {
   saveUser,
   getUsers,
-  deleteUserById,
   getUserById,
-  updatePasswordById,
+  deleteUserById,
+  updateLocalPassword,
+  getLocalPassword,
 };
 
 export default AsyncStorageUserFunctions;

@@ -19,10 +19,10 @@ function Layout() {
   }, []);
 
   return (
-    <Stack>
-      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-      <Stack.Screen name="(home)" options={{ headerShown: false }} />
-      <Stack.Screen name="(local-password)" options={{ headerShown: false }} />
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="(auth)" />
+      <Stack.Screen name="(home)" />
+      <Stack.Screen name="(local-password)" />
     </Stack>
   );
 }

@@ -1,125 +1,86 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Alert,
-  StyleSheet,
-} from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
 import AsyncStorageUserFunctions from "@/utils/AsyncStorage";
+import useAuthStore from "@/store/useAuthStore";
+import { useRouter } from "expo-router";
 
-const LocalPasswordScreen = ({ navigation }: any) => {
+const LocalPasswordScreen = () => {
   const [password, setPassword] = useState("");
-  const [userId, setUserId] = useState<string | null>(null);
   const [savedPassword, setSavedPassword] = useState<string | null>(null);
-  const [newPassword, setNewPassword] = useState("");
+  const userId = useAuthStore((state) => state.userId);
+  const router = useRouter();
 
   useEffect(() => {
+    if (!userId) {
+      router.replace("/(auth)");
+      return;
+    }
+
     const loadUserData = async () => {
-      const storedUserId = await AsyncStorage.getItem("userId");
-      if (storedUserId) {
-        setUserId(storedUserId);
-        const user = await AsyncStorageUserFunctions.getUserById(storedUserId);
-        if (user) {
-          setSavedPassword(user.password);
+      try {
+        const localPassword = await AsyncStorageUserFunctions.getLocalPassword(userId);
+        if (localPassword) {
+          setSavedPassword(localPassword);
+        } else {
+          router.replace("/(home)"); 
         }
+      } catch (error) {
+        console.error("Xatolik:", error);
+        Alert.alert("Xatolik", "Foydalanuvchi ma'lumotlarini olishda muammo yuz berdi.");
       }
     };
 
     loadUserData();
-  }, []);
+  }, [userId]);
 
-  const handleLogin = async () => {
+  const handleLogin = () => {
+    if (savedPassword === null) {
+      Alert.alert("Xatolik", "Parolni yuklashda muammo yuz berdi!");
+      return;
+    }
+
     if (password === savedPassword) {
       Alert.alert("Tizimga kirdingiz!");
-      navigation.navigate("Home");
+      router.replace("/(home)");
     } else {
       Alert.alert("Xatolik!", "Parol noto‘g‘ri!");
     }
   };
 
-  const handleChangePassword = async () => {
-    if (!newPassword) {
-      Alert.alert("Xatolik", "Yangi parolni kiriting!");
-      return;
-    }
-
-    if (userId) {
-      await AsyncStorageUserFunctions.updatePasswordById(userId, newPassword);
-      setSavedPassword(newPassword);
-      Alert.alert("Muvaffaqiyatli!", "Parolingiz yangilandi!");
-    }
-  };
-
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tizimga kirish</Text>
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 20 }}>
+        Tizimga kirish
+      </Text>
 
       <TextInput
-        style={styles.input}
+        style={{
+          width: "80%",
+          padding: 12,
+          borderWidth: 1,
+          borderColor: "#ddd",
+          borderRadius: 8,
+          marginBottom: 20,
+          backgroundColor: "#fff",
+        }}
         placeholder="Parolni kiriting"
         secureTextEntry
         value={password}
         onChangeText={setPassword}
       />
 
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Kirish</Text>
-      </TouchableOpacity>
-
-      <Text style={styles.forgotText}>Parolni unutdingizmi?</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Yangi parol"
-        secureTextEntry
-        value={newPassword}
-        onChangeText={setNewPassword}
-      />
-
-      <TouchableOpacity style={styles.button} onPress={handleChangePassword}>
-        <Text style={styles.buttonText}>Parolni yangilash</Text>
+      <TouchableOpacity
+        style={{
+          backgroundColor: "#007bff",
+          padding: 12,
+          borderRadius: 8,
+        }}
+        onPress={handleLogin}
+      >
+        <Text style={{ color: "#fff", fontSize: 18 }}>Kirish</Text>
       </TouchableOpacity>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#f5f5f5",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
-  input: {
-    width: "80%",
-    padding: 12,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
-    marginBottom: 20,
-    backgroundColor: "#fff",
-  },
-  button: {
-    backgroundColor: "#007bff",
-    padding: 12,
-    borderRadius: 8,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 18,
-  },
-  forgotText: {
-    marginTop: 10,
-    fontSize: 14,
-    color: "#888",
-  },
-});
 
 export default LocalPasswordScreen;

@@ -4,9 +4,9 @@ import { Stack } from "expo-router";
 export class _layout extends Component {
   render() {
     return (
-      <Stack>
-        <Stack.Screen name="index" options={{ title: "Login" }} />
-        <Stack.Screen name="register" options={{ title: "Register" }} />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="index" />
+        <Stack.Screen name="register" />
       </Stack>
     );
   }

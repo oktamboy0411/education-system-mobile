@@ -4,8 +4,8 @@ import { Stack } from "expo-router";
 export class _layout extends Component {
   render() {
     return (
-      <Stack>
-        <Stack.Screen name="index" options={{ title: "Home" }} />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="index" />
       </Stack>
     );
   }
